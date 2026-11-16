@@ -1,0 +1,7 @@
+teste_valor:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: 'teste_valor.duckdb'
+      threads: 4

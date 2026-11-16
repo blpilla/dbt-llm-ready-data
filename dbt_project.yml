@@ -1,0 +1,47 @@
+name: 'teste_valor'
+version: '1.0.0'
+config-version: 2
+
+profile: 'teste_valor'
+
+model-paths: ['models']
+seed-paths: ['seeds']
+test-paths: ['tests']
+macro-paths: ['macros']
+
+clean-targets:
+  - 'target'
+  - 'dbt_packages'
+  - 'logs'
+
+models:
+  teste_valor:
+    +persist_docs:
+      relation: true
+      columns: true
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table
+
+seeds:
+  teste_valor:
+    +quote_columns: false
+    clients:
+      +column_types:
+        client_id: varchar
+        name: varchar
+        city: varchar
+        state: varchar
+        created_at: date
+    transactions:
+      +column_types:
+        transaction_id: varchar
+        client_id: varchar
+        asset_ticker: varchar
+        operation: varchar
+        quantity: integer
+        unit_price: decimal(18, 4)
+        transaction_date: date
