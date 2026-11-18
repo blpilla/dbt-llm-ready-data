@@ -12,7 +12,7 @@ with joined as (
         t.transaction_date,
         {{ transaction_sign('t.operation') }} as operation_sign
     from {{ ref('stg_transactions') }} as t
-    inner join {{ ref('dim_clients') }} as c
+    inner join {{ ref('stg_clients') }} as c
         on t.client_id = c.client_id
 )
 

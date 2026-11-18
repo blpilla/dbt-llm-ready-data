@@ -72,25 +72,21 @@ seeds:
 
 models:
   - name: stg_clients
-    description: Cadastro de clientes tipado e com campos essenciais preenchidos.
+    description: Cadastro de clientes tipado, normalizado e deduplicado na camada de staging (priorizando registros completos).
     columns:
       - name: client_id
-        description: Identificador único esperado para o cliente.
+        description: Identificador único do cliente após deduplicação determinística.
         tests:
           - not_null
-          - unique:
-              config:
-                severity: warn
+          - unique
       - name: name
         description: Nome normalizado do cliente.
         tests:
           - not_null
       - name: city
-        description: Cidade normalizada; pode ficar nula quando ausente na origem.
+        description: Cidade normalizada do cliente (selecionada do cadastro mais completo).
         tests:
-          - not_null:
-              config:
-                severity: warn
+          - not_null
       - name: state
         description: Sigla do estado normalizada em letras maiúsculas.
         tests:
@@ -175,7 +171,7 @@ models:
           - not_null
           - relationships:
               arguments:
-                to: ref('dim_clients')
+                to: ref('stg_clients')
                 field: client_id
       - name: client_name
         description: Nome do cliente associado.
@@ -240,9 +236,13 @@ models:
           - not_null
           - unique
       - name: client_id
-        description: Chave do cliente.
+        description: Chave do cliente (FK para dim_clients).
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_clients')
+                field: client_id
       - name: client_name
         description: Nome do cliente no momento da transformação.
         tests:
